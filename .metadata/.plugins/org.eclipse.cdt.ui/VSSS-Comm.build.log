@@ -1,0 +1,10 @@
+19:58:50 **** Incremental Build of configuration Debug for project VSSS-Comm ****
+make -j7 all 
+arm-none-eabi-size  VSSS-Comm.elf 
+   text	   data	    bss	    dec	    hex	filename
+  39084	    476	   6636	  46196	   b474	VSSS-Comm.elf
+Finished building: default.size.stdout
+ 
+
+19:58:50 Build Finished. 0 errors, 0 warnings. (took 276ms)
+

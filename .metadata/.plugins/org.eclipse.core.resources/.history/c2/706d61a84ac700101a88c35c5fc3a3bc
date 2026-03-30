@@ -1,0 +1,149 @@
+#include "control.h"
+#include "usb_device.h"
+#include "usbd_cdc_if.h"
+
+#include <stdio.h>
+
+
+
+#define CONTROL_TS_MS          10u      // período de controle = 10 ms (100 Hz)
+#define CONTROL_LOG_PERIOD_MS  10u
+
+#define CONTROL_MOTOR_INDEX    CONTROL_MOTOR_INDEX_DEFAULT
+
+/* ---------------- Estado interno ---------------- */
+
+static MotorDriver_t s_motor;
+static PID_TypeDef   s_pid;
+
+static double s_input_rpm   = 0.0;
+static double s_output_pwm  = 0.0;
+static double s_setpoint_rpm= 0.0;
+
+static uint32_t s_last_ctrl_ms = 0;
+static uint32_t s_last_log_ms  = 0;
+
+static char s_usb_log_buf[64];
+
+/* ---------------- Funções auxiliares ---------------- */
+
+static void Control_LogSample(uint32_t now_ms)
+{
+
+    int motor_idx = CONTROL_MOTOR_INDEX;
+
+    int32_t rpm_x100 = (int32_t)(s_motor.rpm[motor_idx] * 100.0f);
+
+    int len = snprintf(s_usb_log_buf, sizeof(s_usb_log_buf),
+                       "%lu,%u,%d,%ld,%ld,%u\r\n",
+                       (unsigned long)now_ms,
+                       (unsigned)motor_idx,
+                       (int)s_output_pwm,
+                       (long)rpm_x100,
+                       (long)s_motor.encoder[motor_idx],
+                       (unsigned)s_motor.battery_mv);
+
+    if (len > 0)
+    {
+
+        CDC_Transmit_FS((uint8_t*)s_usb_log_buf, (uint16_t)len);
+    }
+}
+
+/* ---------------- API pública ---------------- */
+
+void Control_Init(I2C_HandleTypeDef *hi2c)
+{
+    uint32_t now = HAL_GetTick();
+
+    MotorDriver_Init(&s_motor, hi2c);
+
+    s_setpoint_rpm = 0.0;
+    s_input_rpm    = 0.0;
+    s_output_pwm   = 0.0;
+
+
+    double Kp = 3.179;
+    double Ki = 129.8;
+    double Kd = 0.0;
+
+
+    PID2(&s_pid,
+         &s_input_rpm,
+         &s_output_pwm,
+         &s_setpoint_rpm,
+         Kp, Ki, Kd,
+         _PID_CD_DIRECT);
+
+    PID_SetOutputLimits(&s_pid, -100.0, 100.0);
+
+    PID_SetSampleTime(&s_pid, CONTROL_TS_MS);
+
+    PID_SetMode(&s_pid, _PID_MODE_AUTOMATIC);
+
+    s_last_ctrl_ms = now;
+    s_last_log_ms  = now;
+}
+
+void Control_Task(void)
+{
+    uint32_t now = HAL_GetTick();
+
+    /* ---------- Loop de controle (100 Hz) ---------- */
+    if ((now - s_last_ctrl_ms) >= CONTROL_TS_MS)
+    {
+        s_last_ctrl_ms += CONTROL_TS_MS;   // evita drift acumulado
+
+        /* 1) Atualiza driver com o último comando de PWM */
+        int8_t pwm_cmd = (int8_t)s_output_pwm;
+        if (pwm_cmd > 100)  pwm_cmd = 100;
+        if (pwm_cmd < -100) pwm_cmd = -100;
+
+        MotorDriver_Update(&s_motor,
+                           CONTROL_MOTOR_INDEX,
+                           pwm_cmd,
+                           CONTROL_TS_MS);
+
+        /* 2) Atualiza entrada do PID com RPM medida */
+        s_input_rpm = (double)s_motor.rpm[CONTROL_MOTOR_INDEX];
+
+        /* 3) Calcula PID (se o SampleTime interno tiver passado) */
+        PID_Compute(&s_pid);
+        /* s_output_pwm atualizado aqui (double, -100..100) */
+    }
+
+}
+
+/* ---------- Set/Get da referência e sinais ---------- */
+
+void Control_SetSetpoint(double rpm)
+{
+    s_setpoint_rpm = rpm;
+}
+
+double Control_GetSetpoint(void)
+{
+    return s_setpoint_rpm;
+}
+
+double Control_GetMeasuredRPM(void)
+{
+    return s_motor.rpm[CONTROL_MOTOR_INDEX];
+}
+
+double Control_GetPWM(void)
+{
+    return s_output_pwm;
+}
+
+/* ---------- Acessores dos structs internos ---------- */
+
+MotorDriver_t *Control_GetMotor(void)
+{
+    return &s_motor;
+}
+
+PID_TypeDef *Control_GetPID(void)
+{
+    return &s_pid;
+}

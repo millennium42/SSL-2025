@@ -1,0 +1,102 @@
+#include "control.h"
+#include "usb_device.h"
+#include "usbd_cdc_if.h"
+
+#include <stdio.h>
+
+
+
+#define CONTROL_TS_MS          10u      // período de controle = 10 ms (100 Hz)
+#define CONTROL_LOG_PERIOD_MS  10u
+
+#define CONTROL_MOTOR_INDEX    CONTROL_MOTOR_INDEX_DEFAULT
+
+/* ---------------- Estado interno ---------------- */
+
+static MotorDriver_t s_motor;
+static PID_TypeDef   s_pid;
+
+static double s_input_rpm   = 0.0;
+static double s_output_pwm  = 0.0;
+static double s_setpoint_rpm= 0.0;
+
+static uint32_t s_last_ctrl_ms = 0;
+static uint32_t s_last_log_ms  = 0;
+
+/* ---------------- API pública ---------------- */
+
+void Control_Init(I2C_HandleTypeDef *hi2c)
+{
+    uint32_t now = HAL_GetTick();
+
+    MotorDriver_Init(&s_motor, hi2c);
+
+    s_setpoint_rpm = 0.0;
+    s_input_rpm    = 0.0;
+    s_output_pwm   = 0.0;
+
+
+    double Kp = 3.179;
+    double Ki = 129.8;
+    double Kd = 0.0;
+
+
+    PID2(&s_pid,
+         &s_input_rpm,
+         &s_output_pwm,
+         &s_setpoint_rpm,
+         Kp, Ki, Kd,
+         _PID_CD_DIRECT);
+
+    PID_SetOutputLimits(&s_pid, -100.0, 100.0);
+
+    PID_SetSampleTime(&s_pid, CONTROL_TS_MS);
+
+    PID_SetMode(&s_pid, _PID_MODE_AUTOMATIC);
+
+    s_last_ctrl_ms = now;
+    s_last_log_ms  = now;
+}
+
+void Control_Task(void)
+{
+    MotorDriver_Update(&s_motor,
+                       CONTROL_MOTOR_INDEX,
+                       pwm_cmd,
+                       CONTROL_TS_MS);
+
+}
+
+/* ---------- Set/Get da referência e sinais ---------- */
+
+void Control_SetSetpoint(double rpm)
+{
+    s_setpoint_rpm = rpm;
+}
+
+double Control_GetSetpoint(void)
+{
+    return s_setpoint_rpm;
+}
+
+double Control_GetMeasuredRPM(void)
+{
+    return s_motor.rpm[CONTROL_MOTOR_INDEX];
+}
+
+double Control_GetPWM(void)
+{
+    return s_output_pwm;
+}
+
+/* ---------- Acessores dos structs internos ---------- */
+
+MotorDriver_t *Control_GetMotor(void)
+{
+    return &s_motor;
+}
+
+PID_TypeDef *Control_GetPID(void)
+{
+    return &s_pid;
+}

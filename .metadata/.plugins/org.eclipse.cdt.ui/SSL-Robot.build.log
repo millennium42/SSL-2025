@@ -1,0 +1,10 @@
+00:08:44 **** Incremental Build of configuration Debug for project SSL-Robot ****
+make -j7 all 
+arm-none-eabi-size  SSL-Robot.elf 
+   text	   data	    bss	    dec	    hex	filename
+  33756	    256	   8872	  42884	   a784	SSL-Robot.elf
+Finished building: default.size.stdout
+ 
+
+00:08:44 Build Finished. 0 errors, 0 warnings. (took 183ms)
+

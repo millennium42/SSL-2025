@@ -1,0 +1,54 @@
+03:17:35 **** Incremental Build of configuration Debug for project SSL-Transmitter ****
+make -j7 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Inc/Comm/COMM.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Inc/Comm/COMM.d" -MT"Core/Inc/Comm/COMM.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Inc/Comm/COMM.o"
+arm-none-eabi-gcc "../Core/Inc/Comm/COMM_PACKETS.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Inc/Comm/COMM_PACKETS.d" -MT"Core/Inc/Comm/COMM_PACKETS.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Inc/Comm/COMM_PACKETS.o"
+arm-none-eabi-gcc "../Core/Inc/Comm/NRF24_CORE.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Inc/Comm/NRF24_CORE.d" -MT"Core/Inc/Comm/NRF24_CORE.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Inc/Comm/NRF24_CORE.o"
+arm-none-eabi-gcc "../Core/Inc/Comm/NRF24_HAL.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Inc/Comm/NRF24_HAL.d" -MT"Core/Inc/Comm/NRF24_HAL.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Inc/Comm/NRF24_HAL.o"
+In file included from ../Core/Inc/Comm/COMM_PACKETS.c:1:
+../Core/Inc/Comm/COMM_PACKETS.h:78:1: note: offset of packed bit-field 'battery_level' has changed in GCC 4.4
+   78 | } vsss_telemetry_payload_t;
+      | ^
+../Core/Inc/Comm/COMM_PACKETS.h:97:1: note: offset of packed bit-field 'kick_load_status' has changed in GCC 4.4
+   97 | } ssl_telemetry_payload_t;
+      | ^
+In file included from ../Core/Inc/Comm/COMM.h:9,
+                 from ../Core/Inc/Comm/COMM.c:2:
+../Core/Inc/Comm/COMM_PACKETS.h:78:1: note: offset of packed bit-field 'battery_level' has changed in GCC 4.4
+   78 | } vsss_telemetry_payload_t;
+      | ^
+../Core/Inc/Comm/COMM_PACKETS.h:97:1: note: offset of packed bit-field 'kick_load_status' has changed in GCC 4.4
+   97 | } ssl_telemetry_payload_t;
+      | ^
+In file included from ../Core/Inc/Comm/COMM.h:9,
+                 from ../Core/Src/main.c:26:
+../Core/Inc/Comm/COMM_PACKETS.h:78:1: note: offset of packed bit-field 'battery_level' has changed in GCC 4.4
+   78 | } vsss_telemetry_payload_t;
+      | ^
+../Core/Inc/Comm/COMM_PACKETS.h:97:1: note: offset of packed bit-field 'kick_load_status' has changed in GCC 4.4
+   97 | } ssl_telemetry_payload_t;
+      | ^
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:173:31: warning: unused variable 'tel_loss_rate' [-Wunused-variable]
+  173 |                         float tel_loss_rate = (successful_commands > 0) ? ((float)telemetry_replies_lost / successful_commands) * 100.0f : 0.0f;
+      |                               ^~~~~~~~~~~~~
+../Core/Src/main.c:172:31: warning: unused variable 'cmd_loss_rate' [-Wunused-variable]
+  172 |                         float cmd_loss_rate = (command_attempts > 0) ? ((float)command_failures / command_attempts) * 100.0f : 0.0f;
+      |                               ^~~~~~~~~~~~~
+../Core/Src/main.c:171:31: warning: unused variable 'avg_rtt' [-Wunused-variable]
+  171 |                         float avg_rtt = (rtt_count > 0) ? (float)rtt_sum / rtt_count : 0.0f;
+      |                               ^~~~~~~
+arm-none-eabi-gcc -o "SSL-Transmitter.elf" @"objects.list"   -mcpu=cortex-m4 -T"/Users/thxssio/Documents/SSL-2025/SSL-Transmitter/STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SSL-Transmitter.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: SSL-Transmitter.elf
+ 
+arm-none-eabi-size  SSL-Transmitter.elf 
+arm-none-eabi-objdump -h -S SSL-Transmitter.elf  > "SSL-Transmitter.list"
+   text	   data	    bss	    dec	    hex	filename
+  38000	    344	  10280	  48624	   bdf0	SSL-Transmitter.elf
+Finished building: default.size.stdout
+ 
+Finished building: SSL-Transmitter.list
+ 
+
+03:17:35 Build Finished. 0 errors, 3 warnings. (took 614ms)
+

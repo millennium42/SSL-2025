@@ -1,0 +1,107 @@
+#include "control.h"
+
+#define CONTROL_TS_MS          10u      // período do controle (PID, telemetria)
+#define CONTROL_MOTOR_INDEX    CONTROL_MOTOR_INDEX_DEFAULT
+
+/* ---------------- Estado interno ---------------- */
+
+static MotorDriver_t s_motor;
+static PID_TypeDef   s_pid;
+
+static double s_input_rpm    = 0.0;  // RPM medido
+static double s_output_pwm   = 0.0;  // saída do PID (-100..100)
+static double s_setpoint_rpm = 0.0;  // referência de RPM
+
+/* ---------------- API pública ---------------- */
+
+void Control_Init(I2C_HandleTypeDef *hi2c)
+{
+    MotorDriver_Init(&s_motor, hi2c);
+
+    s_setpoint_rpm = 0.0;
+    s_input_rpm    = 0.0;
+    s_output_pwm   = 0.0;   // começa parado
+
+    // Ganhos iniciais (PI “manso”)
+    double Kp = 1.5;
+    double Ki = 8.0;
+    double Kd = 0.0;   // sem derivativo por enquanto
+
+    // PID2 = P_ON_E, controlador em modo DIRECT
+    PID2(&s_pid,
+         &s_input_rpm,
+         &s_output_pwm,
+         &s_setpoint_rpm,
+         Kp, Ki, Kd,
+         _PID_CD_DIRECT);
+
+    // Saída compatível com Hiwonder (-100..100)
+    PID_SetOutputLimits(&s_pid, -100.0, 100.0);
+
+    // SampleTime interno de 10 ms
+    PID_SetSampleTime(&s_pid, CONTROL_TS_MS);
+
+    // Liga modo automático
+    PID_SetMode(&s_pid, _PID_MODE_AUTOMATIC);
+}
+
+void Control_Task(void)
+{
+    // 1) Atualiza comando de PWM conforme saída do PID
+    int8_t pwm_cmd = (int8_t)s_output_pwm;
+
+    if (pwm_cmd > 100)  pwm_cmd = 100;
+    if (pwm_cmd < -100) pwm_cmd = -100;
+
+    // FEED CONTÍNUO: chama sempre que o while(1) rodar
+    MotorDriver_Update(&s_motor,
+                       CONTROL_MOTOR_INDEX,
+                       pwm_cmd,
+                       CONTROL_TS_MS);
+
+    // 2) Atualiza entrada do PID com RPM medida
+    s_input_rpm = (double)s_motor.rpm[CONTROL_MOTOR_INDEX];
+
+    // 3) Computa o PID
+    //    A lib usa GetTime() + SampleTime, então só atualiza a cada 10 ms.
+    if (PID_Compute(&s_pid))
+    {
+        // Garante saturação dentro da faixa
+        if (s_output_pwm > 100.0)  s_output_pwm = 100.0;
+        if (s_output_pwm < -100.0) s_output_pwm = -100.0;
+    }
+}
+
+/* ---------- Set/Get da referência e sinais ---------- */
+
+void Control_SetSetpoint(double rpm)
+{
+    s_setpoint_rpm = rpm;
+}
+
+double Control_GetSetpoint(void)
+{
+    return s_setpoint_rpm;
+}
+
+double Control_GetMeasuredRPM(void)
+{
+    return s_motor.rpm[CONTROL_MOTOR_INDEX];
+}
+
+double Control_GetPWM(void)
+{
+    return s_output_pwm;
+}
+
+/* ---------- Acessores dos structs internos ---------- */
+
+MotorDriver_t *Control_GetMotor(void)
+{
+    return &s_motor;
+}
+
+PID_TypeDef *Control_GetPID(void)
+{
+    return &s_pid;
+}
