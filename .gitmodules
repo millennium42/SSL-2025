@@ -1,0 +1,12 @@
+[submodule "SSL-Base"]
+	path = SSL-Base
+	url = https://github.com/millennium42/SSL-Base.git
+[submodule "SSL-Receiver"]
+	path = SSL-Receiver
+	url = https://github.com/millennium42/SSL-Receiver.git
+[submodule "SSL-Robot"]
+	path = SSL-Robot
+	url = https://github.com/millennium42/SSL-Robot.git
+[submodule "SSL-Transmitter"]
+	path = SSL-Transmitter
+	url = https://github.com/millennium42/SSL-Transmitter.git
