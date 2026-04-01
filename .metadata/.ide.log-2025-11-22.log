@@ -1,5 +1,0 @@
-2025-11-22 00:24:04,913 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] ***WARNING: Display must be created on main thread due to Cocoa restrictions. Use vmarg -XstartOnFirstThread
-2025-11-22 00:24:04,979 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] ***WARNING: Display must be created on main thread due to Cocoa restrictions. Use vmarg -XstartOnFirstThread
-2025-11-22 00:24:05,077 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] ***WARNING: Display must be created on main thread due to Cocoa restrictions. Use vmarg -XstartOnFirstThread
-2025-11-22 00:24:05,084 [INFO] LogOutputStream:77 - [STDOUT_REDIRECT] ***WARNING: Display must be created on main thread due to Cocoa restrictions. Use vmarg -XstartOnFirstThread
-2025-11-22 00:24:05,634 [ERROR] LogOutputStream:75 - [STDERR_REDIRECT] 

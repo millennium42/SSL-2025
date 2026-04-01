@@ -1,0 +1,75 @@
+# =========================
+# Eclipse / STM32CubeIDE
+# =========================
+.metadata/
+RemoteSystemsTempFiles/
+Servers/
+*.launch
+.cproject
+.project
+.settings/
+
+# =========================
+# C/C++ / STM32 Build Artifacts
+# =========================
+Debug/
+Release/
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+*.su
+*.list
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ambientes Virtuais Python
+venv/
+.env/
+.venv/
+env.bak/
+venv.bak/
+
+# =========================
+# Ficheiros do Sistema Operativo
+# =========================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+$RECYCLE.BIN/
